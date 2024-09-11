@@ -1,28 +1,36 @@
 import json
 import re
 
-def _escape_newlines_in_json_value(json_str):
+def _escape_special_chars_in_json_value(json_str):
     """
-    将 JSON 字符串中的值中的换行符转义为 \\n。
+    将 JSON 字符串中的值中的特殊字符转义。
     """
     in_string = False
     escaped_str = []
     for char in json_str:
         if char == '"':
             in_string = not in_string
-        if char == '\n' and in_string:
-            escaped_str.append('\\n')
+        if in_string:
+            if char == '\n':
+                escaped_str.append('\\n')
+            elif char == '\t':
+                escaped_str.append('\\t')
+            elif char == '\r':
+                escaped_str.append('\\r')
+            elif char == '\\':
+                escaped_str.append('\\\\')
+            else:
+                escaped_str.append(char)
         else:
             escaped_str.append(char)
     return ''.join(escaped_str)
 
-
 def _preprocess_json_string(json_str):
     """
-    预处理 JSON 字符串，首先转义值中的换行符，然后移除键值对间多余的空白字符。
+    预处理 JSON 字符串，首先转义值中的特殊字符，然后移除键值对间多余的空白字符。
     """
-    # 首先转义 JSON 值中��换行符
-    json_str = _escape_newlines_in_json_value(json_str)
+    # 首先转义 JSON 值中的特殊��符
+    json_str = _escape_special_chars_in_json_value(json_str)
 
     # 移除键值对之间的多余空白字符（例如换行符、制表符等）
     json_str = re.sub(r'(?<=:|,)\s+', '', json_str)
