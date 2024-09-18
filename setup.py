@@ -1,7 +1,8 @@
 from setuptools import setup, find_packages
+
 setup(
     name='llm-parse-json',
-    version='0.1.6.5',
+    version='0.1.6.7',
     packages=find_packages(),
     install_requires=[],
     description='A simple JSON parsing tool that preprocesses and parses JSON strings.',
